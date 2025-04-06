@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Memory Card Game</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #2c3e50;
+      color: white;
+    }
+
+    .menu {
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #3498db;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+    }
+
+    /* Game Screen */
+    #card-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 100px);
+      gap: 10px;
+    }
+
+    .card {
+      width: 100px;
+      height: 100px;
+      background-color: #ecf0f1;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 24px;
+      font-weight: bold;
+      color: transparent; /* Hide content initially */
+      cursor: pointer;
+      transform: scale(1);
+      transition: transform 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    }
+
+    .card.matched {
+      background-color: #2ecc71;
+      color: white;
+      pointer-events: none;
+    }
+
+    .card.flipped {
+      background-color: #ecf0f1;
+      color: #2c3e50; /* Show content when flipped */
+      transform: rotateY(180deg);
+    }
+
+    /* Animations */
+    @keyframes flipCard {
+      0% {
+        transform: rotateY(0deg);
+      }
+      100% {
+        transform: rotateY(180deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Main Menu -->
+  <div id="main-menu" class="menu">
+    <h1>Memory Card Game</h1>
+    <button id="play-btn" class="btn">Play</button>
+    <button id="how-to-play-btn" class="btn">How to Play</button>
+  </div>
+
+  <!-- How to Play Screen -->
+  <div id="how-to-play" class="menu hidden">
+    <h1>How to Play</h1>
+    <p>Match all pairs of cards by flipping them over two at a time. If the cards match, they stay open; otherwise, they flip back.</p>
+    <button id="back-to-menu" class="btn">Back to Menu</button>
+  </div>
+
+  <!-- Game Screen -->
+  <div id="game-screen" class="hidden">
+    <h1 id="score">Score: 0</h1>
+    <div id="card-grid"></div>
+  </div>
+
+  <!-- Game Over Screen -->
+  <div id="game-over" class="menu hidden">
+    <h1>Game Over!</h1>
+    <p id="final-score">Your Score: 0</p>
+    <button id="restart-btn" class="btn">Restart</button>
+    <button id="home-btn" class="btn">Home</button>
+  </div>
+
+  <script>
+    // Select DOM elements
+    const mainMenu = document.getElementById('main-menu');
+    const howToPlay = document.getElementById('how-to-play');
+    const gameScreen = document.getElementById('game-screen');
+    const gameOverScreen = document.getElementById('game-over');
+    const playBtn = document.getElementById('play-btn');
+    const howToPlayBtn = document.getElementById('how-to-play-btn');
+    const backToMenuBtn = document.getElementById('back-to-menu');
+    const restartBtn = document.getElementById('restart-btn');
+    const homeBtn = document.getElementById('home-btn');
+    const scoreDisplay = document.getElementById('score');
+    const finalScoreDisplay = document.getElementById('final-score');
+    const cardGrid = document.getElementById('card-grid');
+
+    let cards = [];
+    let flippedCards = [];
+    let matchedPairs = 0;
+    let score = 0;
+
+    // Event Listeners
+    playBtn.addEventListener('click', startGame);
+    howToPlayBtn.addEventListener('click', showHowToPlay);
+    backToMenuBtn.addEventListener('click', showMainMenu);
+    restartBtn.addEventListener('click', startGame);
+    homeBtn.addEventListener('click', showMainMenu);
+
+    // Show How to Play Screen
+    function showHowToPlay() {
+      mainMenu.classList.add('hidden');
+      howToPlay.classList.remove('hidden');
+    }
+
+    // Show Main Menu
+    function showMainMenu() {
+      howToPlay.classList.add('hidden');
+      gameOverScreen.classList.add('hidden');
+      mainMenu.classList.remove('hidden');
+    }
+
+    // Start Game
+    function startGame() {
+      mainMenu.classList.add('hidden');
+      howToPlay.classList.add('hidden');
+      gameOverScreen.classList.add('hidden');
+      gameScreen.classList.remove('hidden');
+
+      // Reset game state
+      cards = [];
+      flippedCards = [];
+      matchedPairs = 0;
+      score = 0;
+      scoreDisplay.textContent = `Score: ${score}`;
+      cardGrid.innerHTML = '';
+
+      // Generate cards
+      const pairs = 8; // Total pairs of cards
+      const icons = ['😊', '😎', '🤩', '🥳', '😜', '🤑', '🤔', '🥰'];
+      const cardValues = [...icons, ...icons];
+
+      // Shuffle array
+      for (let i = cardValues.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cardValues[i], cardValues[j]] = [cardValues[j], cardValues[i]];
+      }
+
+      // Create cards
+      cardValues.forEach((value) => {
+        const card = document.createElement('div');
+        card.classList.add('card');
+        card.dataset.value = value;
+        card.textContent = value; // Set the emoji as the card's content
+        card.addEventListener('click', () => flipCard(card));
+        cardGrid.appendChild(card);
+        cards.push(card);
+      });
+    }
+
+    // Flip Card
+    function flipCard(card) {
+      if (flippedCards.length < 2 && !card.classList.contains('flipped')) {
+        card.classList.add('flipped');
+        flippedCards.push(card);
+
+        if (flippedCards.length === 2) {
+          checkForMatch();
+        }
+      }
+    }
+
+    // Check for Match
+    function checkForMatch() {
+      const [card1, card2] = flippedCards;
+
+      if (card1.dataset.value === card2.dataset.value) {
+        card1.classList.add('matched');
+        card2.classList.add('matched');
+        flippedCards = [];
+        matchedPairs++;
+        score += 10;
+        scoreDisplay.textContent = `Score: ${score}`;
+
+        if (matchedPairs === cards.length / 2) {
+          endGame();
+        }
+      } else {
+        setTimeout(() => {
+          card1.classList.remove('flipped');
+          card2.classList.remove('flipped');
+          flippedCards = [];
+        }, 1000);
+      }
+    }
+
+    // End Game
+    function endGame() {
+      gameScreen.classList.add('hidden');
+      gameOverScreen.classList.remove('hidden');
+      finalScoreDisplay.textContent = `Your Score: ${score}`;
+    }
+  </script>
+</body>
+</html>
