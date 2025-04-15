@@ -112,6 +112,29 @@
         transform: rotateY(180deg);
       }
     }
+    #ad-overlay {
+      height: 290px;
+      width: 300px;
+      position: absolute;
+      background-color: white;
+      margin: auto;
+      display: none;
+
+      #close-start-btn {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+
+      p {
+        color: #000000;
+        font-size: 13px;
+        position: absolute;
+        bottom: -16px;
+        left: 0;
+        padding: 5px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -143,6 +166,23 @@
     <button id="home-btn" class="btn">Home</button>
   </div>
 
+  <div id="ad-overlay">
+    <button id="close-start-btn">X</button>
+    <p>Visiting this small ad helps us to grow and update. Thanks for your support! 💖</p>
+
+  <!-- Adsterra Ads Code -->
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '15cd165eb5c6f2b40807bacca76d739c',
+        'format' : 'iframe',
+        'height' : 250,
+        'width' : 300,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/15cd165eb5c6f2b40807bacca76d739c/invoke.js"></script>
+  </div>
+
   <script>
     // Select DOM elements
     const mainMenu = document.getElementById('main-menu');
@@ -157,6 +197,8 @@
     const scoreDisplay = document.getElementById('score');
     const finalScoreDisplay = document.getElementById('final-score');
     const cardGrid = document.getElementById('card-grid');
+    const adoverlay = document.getElementById('ad-overlay');
+    const closeBtn = document.getElementById('close-start-btn');
 
     let cards = [];
     let flippedCards = [];
@@ -167,7 +209,9 @@
     playBtn.addEventListener('click', startGame);
     howToPlayBtn.addEventListener('click', showHowToPlay);
     backToMenuBtn.addEventListener('click', showMainMenu);
-    restartBtn.addEventListener('click', startGame);
+    //restartBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', showAdOverlay)
+    closeBtn.addEventListener('click', startGame);
     homeBtn.addEventListener('click', showMainMenu);
 
     // Show How to Play Screen
@@ -176,6 +220,10 @@
       howToPlay.classList.remove('hidden');
     }
 
+    // show ad-overlay container 
+    function showAdOverlay() {
+      adoverlay.style.display = 'block';
+    }
     // Show Main Menu
     function showMainMenu() {
       howToPlay.classList.add('hidden');
@@ -189,6 +237,7 @@
       howToPlay.classList.add('hidden');
       gameOverScreen.classList.add('hidden');
       gameScreen.classList.remove('hidden');
+      adoverlay.style.display = 'none';
 
       // Reset game state
       cards = [];
@@ -264,16 +313,5 @@
       finalScoreDisplay.textContent = `Your Score: ${score}`;
     }
   </script>
-
-<script type="text/javascript">
-	atOptions = {
-		'key' : '15cd165eb5c6f2b40807bacca76d739c',
-		'format' : 'iframe',
-		'height' : 250,
-		'width' : 300,
-		'params' : {}
-	};
-</script>
-<script type="text/javascript" src="//www.highperformanceformat.com/15cd165eb5c6f2b40807bacca76d739c/invoke.js"></script>
 </body>
 </html>
