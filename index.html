@@ -134,15 +134,12 @@
     <h1 id="score">Score: 0</h1>
     <div id="card-grid"></div>
   </div>
-  
-<!-- Ad container (initially hidden) -->
-<div id="ad-container" style="display: none; text-align: center; margin-top: 20px;"></div>
-  
+
   <!-- Game Over Screen -->
   <div id="game-over" class="menu hidden">
     <h1>Game Over!</h1>
     <p id="final-score">Your Score: 0</p>
-    <button onclick="showAdAndRestart()" id="restart-btn" class="btn">Restart</button>
+    <button id="restart-btn" class="btn">Restart</button>
     <button id="home-btn" class="btn">Home</button>
   </div>
 
@@ -266,31 +263,17 @@
       gameOverScreen.classList.remove('hidden');
       finalScoreDisplay.textContent = `Your Score: ${score}`;
     }
-
-    function showAdAndRestart() {
-  // Show the ad container
-  const container = document.getElementById("ad-container");
-  container.style.display = "block";
-
-  // Inject the ad script dynamically
-  const atOptions = {
-    'key': '15cd165eb5c6f2b40807bacca76d739c',
-    'format': 'iframe',
-    'height': 250,
-    'width': 300,
-    'params': {}
-  };
-
-  const script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src = '//www.highperformanceformat.com/15cd165eb5c6f2b40807bacca76d739c/invoke.js';
-  container.appendChild(script);
-
-  // Optional: Restart game after delay (adjust as needed)
-  setTimeout(() => {
-    location.reload(); // Replace with your custom restart logic if needed
-  }, 5000); // Wait 5 seconds before restart
-}
   </script>
+
+<script type="text/javascript">
+	atOptions = {
+		'key' : '15cd165eb5c6f2b40807bacca76d739c',
+		'format' : 'iframe',
+		'height' : 250,
+		'width' : 300,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/15cd165eb5c6f2b40807bacca76d739c/invoke.js"></script>
 </body>
 </html>
